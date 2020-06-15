@@ -2,6 +2,7 @@
 const dialogflow = require('dialogflow');
 const structjson = require('structjson');
 const config = require('../config/keys');
+const auth = require('../keys/chatbot-iqcknk-4f700723946e.json');
 
 const projectID = config.googleProjectID;
 
