@@ -32,8 +32,12 @@ module.exports = {
                 }
             }
         };
-        let responses = await sessionClient.detectIntent(request);
+        let responses = await sessionClient.detectIntent(request).catch((err) => {
+            console.log(err);
+        });
         responses = await self.handleAction(responses);
+        console.log(responses);
+
         return responses;
     },
     handleAction: function(responses){
