@@ -2,9 +2,12 @@
 const dialogflow = require('dialogflow');
 const structjson = require('structjson');
 const config = require('../config/keys');
-const auth = require('../keys/chatbot-iqcknk-4f700723946e.json');
+
+
 
 const projectID = config.googleProjectID;
+const sessionID = config.dialogFlowSessionID;
+const languageCode = config.dialogFlowSessionLanguageCode;
 
 const credentials = {
     client_email: config.googleClientEmail,
@@ -14,17 +17,17 @@ const credentials = {
 
 const sessionClient = new dialogflow.SessionsClient({projectID, credentials});
 
-const sessionPath = sessionClient.sessionPath(config.googleProjectID, config.dialogFlowSessionID);
 
 module.exports = {
-    textQuery: async function(text, parameters = {}) {
+    textQuery: async function(text, userID, parameters = {}) {
+        let sessionPath = sessionClient.sessionPath(projectID, sessionID + userID);
         let self =  module.exports;
         const request = {
             session: sessionPath,
             queryInput: {
                 text: {
                     text: text,
-                    languageCode: config.dialogFlowSessionLanguageCode
+                    languageCode: languageCode
                 },
             },
             queryParams: {
@@ -37,14 +40,13 @@ module.exports = {
             console.log(err);
         });
         responses = await self.handleAction(responses);
-        console.log(responses);
-
         return responses;
     },
     handleAction: function(responses){
         return responses;
     },
-    eventQuery: async function(event, parameters = {}) {
+    eventQuery: async function(event, userID, parameters = {}) {
+        let sessionPath = sessionClient.sessionPath(projectID, sessionClient + userID);
         let self =  module.exports;
         const request = {
             session: sessionPath,
@@ -52,7 +54,7 @@ module.exports = {
                 event: {
                     name: event,
                     parameters: structjson.jsonToStructProto(parameters),
-                    languageCode: config.dialogFlowSessionLanguageCode
+                    languageCode: languageCode
                 },
             },
         };
